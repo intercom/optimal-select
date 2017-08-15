@@ -26,7 +26,7 @@ const defaultIgnore = {
 export default function match (node, options) {
 
   const {
-    root = document,
+    root = window.top.document,
     skip = null,
     priority = ['id', 'class', 'href', 'src'],
     ignore = {}

@@ -13,7 +13,7 @@
 export function getCommonAncestor (elements, options = {}) {
 
   const {
-    root = document
+    root = window.top.document
   } = options
 
   const ancestors = []

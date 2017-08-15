@@ -43,7 +43,7 @@ export default function optimize (selector, elements, options = {}) {
     const postPart = shortened.join(' ')
 
     const pattern = `${prePart} ${postPart}`
-    const matches = document.querySelectorAll(pattern)
+    const matches = window.top.document.querySelectorAll(pattern)
     if (matches.length !== elements.length) {
       shortened.unshift(optimizePart(prePart, current, postPart, elements))
     }
@@ -56,7 +56,7 @@ export default function optimize (selector, elements, options = {}) {
   path[path.length-1] = optimizePart(path.slice(0, -1).join(' '), path[path.length-1], '', elements)
 
   if (globalModified) {
-    delete global.document
+    delete global.window.top.document
   }
 
   return path.join(' ').replace(/>/g, '> ').trim()
@@ -79,18 +79,18 @@ function optimizePart (prePart, current, postPart, elements) {
   if (/\[*\]/.test(current)) {
     const key = current.replace(/=.*$/, ']')
     var pattern = `${prePart}${key}${postPart}`
-    var matches = document.querySelectorAll(pattern)
+    var matches = window.top.document.querySelectorAll(pattern)
     if (compareResults(matches, elements)) {
       current = key
     } else {
       // robustness: replace specific key-value with base tag (heuristic)
-      const references = document.querySelectorAll(`${prePart}${key}`)
+      const references = window.top.document.querySelectorAll(`${prePart}${key}`)
       for (var i = 0, l = references.length; i < l; i++) {
         const reference = references[i]
         if (elements.some((element) => reference.contains(element))) {
           const description = reference.tagName.toLowerCase()
           var pattern = `${prePart}${description}${postPart}`
-          var matches = document.querySelectorAll(pattern)
+          var matches = window.top.document.querySelectorAll(pattern)
           if (compareResults(matches, elements)) {
             current = description
           }
@@ -104,7 +104,7 @@ function optimizePart (prePart, current, postPart, elements) {
   if (/>/.test(current)) {
     const descendant = current.replace(/>/, '')
     var pattern = `${prePart}${descendant}${postPart}`
-    var matches = document.querySelectorAll(pattern)
+    var matches = window.top.document.querySelectorAll(pattern)
     if (compareResults(matches, elements)) {
       current = descendant
     }
@@ -115,7 +115,7 @@ function optimizePart (prePart, current, postPart, elements) {
     // TODO: consider complete coverage of 'nth-of-type' replacement
     const type = current.replace(/nth-child/g, 'nth-of-type')
     var pattern = `${prePart}${type}${postPart}`
-    var matches = document.querySelectorAll(pattern)
+    var matches = window.top.document.querySelectorAll(pattern)
     if (compareResults(matches, elements)) {
       current = type
     }
@@ -132,7 +132,7 @@ function optimizePart (prePart, current, postPart, elements) {
       if (!pattern.length || pattern.charAt(0) === '>' || pattern.charAt(pattern.length-1) === '>') {
         break
       }
-      var matches = document.querySelectorAll(pattern)
+      var matches = window.top.document.querySelectorAll(pattern)
       if (compareResults(matches, elements)) {
         current = partial
       }
@@ -141,7 +141,7 @@ function optimizePart (prePart, current, postPart, elements) {
     // robustness: degrade complex classname (heuristic)
     names = current && current.match(/\./g)
     if (names && names.length > 2) {
-      const references = document.querySelectorAll(`${prePart}${current}`)
+      const references = window.top.document.querySelectorAll(`${prePart}${current}`)
       for (var i = 0, l = references.length; i < l; i++) {
         const reference = references[i]
         if (elements.some((element) => reference.contains(element) )) {
@@ -149,7 +149,7 @@ function optimizePart (prePart, current, postPart, elements) {
           // - check using attributes + regard excludes
           const description = reference.tagName.toLowerCase()
           var pattern = `${prePart}${description}${postPart}`
-          var matches = document.querySelectorAll(pattern)
+          var matches = window.top.document.querySelectorAll(pattern)
           if (compareResults(matches, elements)) {
             current = description
           }
