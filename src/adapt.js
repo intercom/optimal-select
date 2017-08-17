@@ -110,6 +110,7 @@ export default function adapt (element, options) {
     // https://developer.mozilla.org/en-US/docs/Web/API/Element/querySelectorAll
     ElementPrototype.querySelectorAll = function (selectors) {
       selectors = selectors.replace(/(>)(\S)/g, '$1 $2').trim() // add space for '>' selector
+      selectors = selectors.replace(/\\/g, '').trim() // remove escaping characters
 
       // using right to left execution => https://github.com/fb55/css-select#how-does-it-work
       const instructions = getInstructions(selectors)
@@ -156,7 +157,7 @@ export default function adapt (element, options) {
 function getInstructions (selectors) {
   return selectors.split(' ').reverse().map((selector, step) => {
     const discover = step === 0
-    const [type, pseudo] = selector.split(':')
+    const [type, pseudo] = selector.split(/:(?!\\\/\\\/)(?!\/\/)/) // don't split on http(s)://
 
     var validate = null
     var instruction = null
