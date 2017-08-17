@@ -24,6 +24,11 @@ export default function adapt (element, options) {
       }
       return root
     })()
+    global.window = {
+      top: {
+        document: global.document
+      }
+    }
   }
 
   // https://github.com/fb55/domhandler/blob/master/index.js#L75
