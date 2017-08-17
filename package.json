@@ -1,7 +1,7 @@
 {
   "name": "intercom-optimal-select",
   "description": "Get efficient & robust CSS selectors for HTML elements",
-  "version": "4.1.0-intercom",
+  "version": "4.1.1-intercom",
   "author": "Stefan Dühring (modified by Intercom)",
   "bugs": {
     "url": "https://github.com/intercom/optimal-select/issues"
